@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Линейный Гений</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e0f7fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 1000px;
+            width: 100%;
+            overflow-x: auto; /* Добавляем горизонтальную прокрутку */
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        .equation-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            width: 50px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        select {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .bracket {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .theory {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e0f7fa;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        sup {
+            font-size: 0.75em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Линейный Гений</h1>
+        <form method="POST" action="/solve">
+            <label for="equation_count">Количество уравнений:</label>
+            <select id="equation_count" name="equation_count" onchange="generateEquationFields()">
+                <option value="2">2</option>
+                <option value="3" selected>3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+            </select>
+            <br><br>
+
+            <label for="variable_count">Количество переменных:</label>
+            <select id="variable_count" name="variable_count" onchange="generateEquationFields()">
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+            </select>
+            <br><br>
+
+            <label for="method">Выберите метод решения:</label>
+            <select id="method" name="method">
+                <option value="gauss">Метод Гаусса</option>
+                <option value="cramer">Метод Крамера</option>
+                <option value="lu">LU-разложение</option>
+                <option value="jordan">Жордан-Гаусс</option>
+                <option value="inverse_matrix">Обратная матрица</option>
+                <option value="jacobi">Метод Якоби</option>
+            </select>
+            <br><br>
+
+            <div id="equation-container"></div>
+
+            <br>
+            <button type="submit">Решить систему уравнений</button>
+        </form>
+
+        <div class="theory" id="theory-container">
+            <h3>Теоретическая часть</h3>
+            <p>Выберите количество уравнений и метод решения. Вводите систему уравнений в соответствующих полях и выбирайте операции. На каждом этапе решения будет показано объяснение, что и почему делается.</p>
+        </div>
+    </div>
+
+    <script>
+        // Генерация полей уравнений
+        function generateEquationFields() {
+            const equationCount = parseInt(document.getElementById('equation_count').value);
+            const variableCount = parseInt(document.getElementById('variable_count').value);
+            const container = document.getElementById('equation-container');
+            container.innerHTML = '';  // Очищаем предыдущие поля
+
+            for (let i = 1; i <= equationCount; i++) {
+                const row = document.createElement('div');
+                row.classList.add('equation-row');
+
+                let equationHtml = '<span class="bracket">{</span>';
+
+                for (let j = 1; j <= variableCount; j++) {
+                    equationHtml += `<input type="text" name="a${i}${j}" value="0"> x${j}`;
+                    if (j < variableCount) {
+                        equationHtml += `
+                        <select name="sign${i}${j}">
+                            <option value="+">+</option>
+                            <option value="-">-</option>
+                            <option value="×">×</option>
+                            <option value="/">/</option>
+                        </select>`;
+                    }
+                }
+
+                equationHtml += ` = <input type="text" name="b${i}" value="0">`;
+
+                row.innerHTML = equationHtml;
+                container.appendChild(row);
+            }
+        }
+
+        // Генерация полей при загрузке страницы
+        window.onload = generateEquationFields;
+    </script>
+</body>
+</html>
